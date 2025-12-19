@@ -2,9 +2,11 @@ import React, { useCallback, useMemo } from 'react'
 import Draggable from 'react-draggable'
 import Resizable from './Resizable'
 import Shortcut from './Shortcut'
+import { autoCenterWidgets } from '../utils/centering'
 import './ShortcutManager.css'
 
 function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, onPositionUpdate, sizes, onSizeUpdate }) {
+  const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1920
   const handleDragStop = useCallback((id, data) => {
     // Snap to grid if grid mode is enabled
     let x = data.x
@@ -16,18 +18,37 @@ function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, on
       y = Math.round(y / gridSize) * gridSize
     }
     
-    onPositionUpdate({
+    const newPositions = {
       ...positions,
       [id]: { x, y }
-    })
-  }, [positions, onPositionUpdate, gridMode])
+    }
+    
+    // Auto-center shortcuts
+    const centeredPositions = autoCenterWidgets(
+      newPositions,
+      sizes || {},
+      windowWidth
+    )
+    
+    onPositionUpdate(centeredPositions)
+  }, [positions, onPositionUpdate, gridMode, sizes, windowWidth])
 
   const handleResize = useCallback((id, size) => {
-    onSizeUpdate({
+    const newSizes = {
       ...sizes,
       [id]: size
-    })
-  }, [sizes, onSizeUpdate])
+    }
+    
+    // Auto-center after resize
+    const centeredPositions = autoCenterWidgets(
+      positions,
+      newSizes,
+      windowWidth
+    )
+    
+    onSizeUpdate(newSizes)
+    onPositionUpdate(centeredPositions)
+  }, [sizes, onSizeUpdate, positions, onPositionUpdate, windowWidth])
 
   const getPosition = useCallback((id) => {
     return positions[id] || { x: 0, y: 0 }
