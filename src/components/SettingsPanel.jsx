@@ -167,6 +167,27 @@ function SettingsPanel({ settings, onUpdate, onClose }) {
             )}
           </section>
 
+          {/* Grid Settings */}
+          <section className="settings-section">
+            <h3>Grid Settings</h3>
+            <label>
+              Grid Size (pixels)
+              <input
+                type="number"
+                min="8"
+                max="128"
+                step="8"
+                value={localSettings.gridSize || 32}
+                onChange={(e) => handleChange('gridSize', parseInt(e.target.value) || 32)}
+                className="settings-input"
+                style={{ marginTop: '10px' }}
+              />
+            </label>
+            <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.9rem', marginTop: '5px' }}>
+              Size of the grid cells in pixels (8-128, recommended: 16-64)
+            </p>
+          </section>
+
           {/* Shortcuts */}
           <section className="settings-section">
             <h3>Shortcuts</h3>

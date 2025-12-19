@@ -15,6 +15,16 @@
   z-index: 1;
 }
 
+.search-bar.grid-mode-disabled {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.search-bar.grid-mode-disabled .search-input,
+.search-bar.grid-mode-disabled .search-button {
+  cursor: default;
+}
+
 .search-drag-handle {
   position: absolute;
   top: 0;

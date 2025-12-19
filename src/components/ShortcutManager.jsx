@@ -2,18 +2,20 @@ import React, { useCallback, useMemo } from 'react'
 import Draggable from 'react-draggable'
 import Resizable from './Resizable'
 import Shortcut from './Shortcut'
+import WidgetColorPicker from './WidgetColorPicker'
 import { autoCenterWidgets } from '../utils/centering'
+import { autoLayoutWidgets } from '../utils/layout'
 import './ShortcutManager.css'
 
-function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, onPositionUpdate, sizes, onSizeUpdate }) {
+function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, onPositionUpdate, sizes, onSizeUpdate, widgetColors, onColorChange, gridSize = 32 }) {
   const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 1920
+  const windowHeight = typeof window !== 'undefined' ? window.innerHeight : 1080
   const handleDragStop = useCallback((id, data) => {
     // Snap to grid if grid mode is enabled
     let x = data.x
     let y = data.y
     
     if (gridMode) {
-      const gridSize = 32
       x = Math.round(x / gridSize) * gridSize
       y = Math.round(y / gridSize) * gridSize
     }
@@ -23,15 +25,28 @@ function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, on
       [id]: { x, y }
     }
     
-    // Auto-center shortcuts
-    const centeredPositions = autoCenterWidgets(
-      newPositions,
-      sizes || {},
-      windowWidth
-    )
+    // Auto-layout to prevent overlap (only in grid mode)
+    let finalPositions = newPositions
+    if (gridMode) {
+      finalPositions = autoLayoutWidgets(
+        newPositions,
+        sizes || {},
+        windowWidth,
+        windowHeight,
+        gridSize
+      )
+    } else {
+      // Auto-center shortcuts (when not in grid mode)
+      finalPositions = autoCenterWidgets(
+        newPositions,
+        sizes || {},
+        windowWidth,
+        gridSize
+      )
+    }
     
-    onPositionUpdate(centeredPositions)
-  }, [positions, onPositionUpdate, gridMode, sizes, windowWidth])
+    onPositionUpdate(finalPositions)
+  }, [positions, onPositionUpdate, gridMode, sizes, windowWidth, windowHeight, gridSize])
 
   const handleResize = useCallback((id, size) => {
     const newSizes = {
@@ -39,16 +54,29 @@ function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, on
       [id]: size
     }
     
-    // Auto-center after resize
-    const centeredPositions = autoCenterWidgets(
-      positions,
-      newSizes,
-      windowWidth
-    )
+    // Auto-layout to prevent overlap (only in grid mode)
+    let finalPositions = positions
+    if (gridMode) {
+      finalPositions = autoLayoutWidgets(
+        positions,
+        newSizes,
+        windowWidth,
+        windowHeight,
+        gridSize
+      )
+    } else {
+      // Auto-center after resize (when not in grid mode)
+      finalPositions = autoCenterWidgets(
+        positions,
+        newSizes,
+        windowWidth,
+        gridSize
+      )
+    }
     
     onSizeUpdate(newSizes)
-    onPositionUpdate(centeredPositions)
-  }, [sizes, onSizeUpdate, positions, onPositionUpdate, windowWidth])
+    onPositionUpdate(finalPositions)
+  }, [sizes, onSizeUpdate, positions, onPositionUpdate, windowWidth, windowHeight, gridMode, gridSize])
 
   const getPosition = useCallback((id) => {
     return positions[id] || { x: 0, y: 0 }
@@ -58,7 +86,11 @@ function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, on
     return sizes?.[id] || null
   }, [sizes])
 
-  const gridValue = useMemo(() => gridMode ? [32, 32] : null, [gridMode])
+  const getColor = useCallback((id) => {
+    return widgetColors?.[id] || null
+  }, [widgetColors])
+
+  const gridValue = useMemo(() => gridMode ? [gridSize, gridSize] : null, [gridMode, gridSize])
 
   return (
     <div className="shortcut-manager">
@@ -76,13 +108,23 @@ function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, on
             <div className="draggable-shortcut">
               <Resizable
                 onResize={(newSize) => handleResize(shortcut.id, newSize)}
-                gridSize={gridMode ? 32 : null}
+                gridSize={gridMode ? gridSize : null}
                 minWidth={50}
                 minHeight={50}
                 initialSize={size}
                 gridMode={gridMode}
               >
-                <Shortcut shortcut={shortcut} />
+                <Shortcut 
+                  shortcut={shortcut} 
+                  gridMode={gridMode}
+                  backgroundColor={getColor(shortcut.id)}
+                />
+                <WidgetColorPicker
+                  widgetId={shortcut.id}
+                  currentColor={getColor(shortcut.id)}
+                  onColorChange={onColorChange}
+                  gridMode={gridMode}
+                />
               </Resizable>
             </div>
           </Draggable>

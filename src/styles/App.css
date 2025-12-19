@@ -45,7 +45,17 @@
   align-items: center;
   justify-content: center;
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app:hover .settings-button,
+.app:hover .grid-toggle-button,
+.settings-button.visible,
+.grid-toggle-button.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .settings-button:hover,
@@ -102,6 +112,15 @@
 
   .grid-toggle-button {
     right: 65px;
+  }
+}
+
+/* Touch devices - always show buttons */
+@media (hover: none) {
+  .settings-button,
+  .grid-toggle-button {
+    opacity: 1;
+    pointer-events: auto;
   }
 }
 

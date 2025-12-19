@@ -1,7 +1,6 @@
 // Default settings
-const getDefaultPositions = () => {
+const getDefaultPositions = (gridSize = 32) => {
   const width = typeof window !== 'undefined' ? window.innerWidth : 1920
-  const gridSize = 32
   
   // Center widgets horizontally
   const centerX = (widgetWidth) => {
@@ -26,10 +25,12 @@ export const defaultSettings = {
   personalMessage: '',
   searchEngine: 'duckduckgo',
   gridMode: false,
-  positions: getDefaultPositions(),
+  gridSize: 32, // Grid size in pixels
+  positions: getDefaultPositions(32),
   shortcutPositions: {},
   sizes: {},
-  shortcutSizes: {}
+  shortcutSizes: {},
+  widgetColors: {}
 }
 
 // Load settings from localStorage

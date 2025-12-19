@@ -98,9 +98,14 @@ The project already includes a GitHub Actions workflow file (`.github/workflows/
 
 ## 🎨 Usage
 
-### Open Settings
+### Accessing Settings and Grid Mode
 
-Click on the **⚙️ Settings icon** (top right) to open the settings panel.
+**Important**: The Settings (⚙️) and Grid Mode (⊞) buttons are hidden by default to keep your dashboard clean. They become visible when you:
+- **Hover** your mouse over the dashboard area
+- The buttons will remain visible for **15 seconds** after you move your mouse away
+- On **touch devices** (smartphones/tablets), the buttons are always visible
+
+To open settings, hover over the bottom-right corner of the dashboard and click the **⚙️ Settings icon**.
 
 ### Add Shortcuts
 

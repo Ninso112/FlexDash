@@ -2,8 +2,6 @@
  * Utility functions for automatic centering of widgets
  */
 
-const GRID_SIZE = 32
-
 /**
  * Calculate centered position for a widget based on its size and row
  * @param {number} width - Widget width
@@ -12,13 +10,13 @@ const GRID_SIZE = 32
  * @param {Array} widgetsInRow - Array of widgets in the same row
  * @returns {Object} Centered position {x, y}
  */
-export function calculateCenteredPosition(width, height, screenWidth, widgetsInRow = []) {
+export function calculateCenteredPosition(width, height, screenWidth, widgetsInRow = [], gridSize = 32) {
   // If only one widget in row, center it
   if (widgetsInRow.length === 1) {
     const x = Math.max(0, (screenWidth - width) / 2)
     // Snap to grid
     return {
-      x: Math.round(x / GRID_SIZE) * GRID_SIZE,
+      x: Math.round(x / gridSize) * gridSize,
       y: widgetsInRow[0].y || 0
     }
   }
@@ -41,7 +39,7 @@ export function calculateCenteredPosition(width, height, screenWidth, widgetsInR
  * @param {number} tolerance - Y position tolerance in pixels (default: grid size)
  * @returns {Object} Object with row keys and widget arrays
  */
-export function groupWidgetsByRow(widgets, tolerance = GRID_SIZE) {
+export function groupWidgetsByRow(widgets, tolerance = 32) {
   const rows = {}
   
   widgets.forEach(widget => {
@@ -79,9 +77,10 @@ function getDefaultWidth(widgetId) {
  * @param {Object} positions - Object with component positions
  * @param {Object} sizes - Object with component sizes
  * @param {number} screenWidth - Screen width
+ * @param {number} gridSize - Grid size in pixels
  * @returns {Object} Updated positions object
  */
-export function autoCenterWidgets(positions, sizes, screenWidth) {
+export function autoCenterWidgets(positions, sizes, screenWidth, gridSize = 32) {
   if (!positions || Object.keys(positions).length === 0) {
     return positions
   }
@@ -100,7 +99,7 @@ export function autoCenterWidgets(positions, sizes, screenWidth) {
     }
   })
   
-  const rows = groupWidgetsByRow(widgets)
+  const rows = groupWidgetsByRow(widgets, gridSize)
   const newPositions = { ...positions }
   
   Object.keys(rows).forEach(rowY => {
@@ -112,7 +111,7 @@ export function autoCenterWidgets(positions, sizes, screenWidth) {
       const width = widget.width
       const x = Math.max(0, (screenWidth - width) / 2)
       newPositions[widget.id] = {
-        x: Math.round(x / GRID_SIZE) * GRID_SIZE,
+        x: Math.round(x / gridSize) * gridSize,
         y: parseInt(rowY)
       }
     }
@@ -125,7 +124,7 @@ export function autoCenterWidgets(positions, sizes, screenWidth) {
       widgetsInRow.forEach((widget, index) => {
         const x = Math.max(0, currentX)
         newPositions[widget.id] = {
-          x: Math.round(x / GRID_SIZE) * GRID_SIZE,
+          x: Math.round(x / gridSize) * gridSize,
           y: parseInt(rowY)
         }
         currentX += widget.width + spacing

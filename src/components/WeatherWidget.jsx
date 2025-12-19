@@ -5,7 +5,7 @@ import './WeatherWidget.css'
 const API_BASE = 'https://geocoding-api.open-meteo.com/v1/search'
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast'
 
-function WeatherWidget({ location }) {
+function WeatherWidget({ location, backgroundColor }) {
   const [weather, setWeather] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -74,8 +74,10 @@ function WeatherWidget({ location }) {
     return null
   }
 
+  const style = backgroundColor ? { backgroundColor } : {}
+
   return (
-    <div className="weather-widget">
+    <div className="weather-widget" style={style}>
       {loading && <div className="weather-loading">Loading...</div>}
       {error && <div className="weather-error">{error}</div>}
       {weather && !loading && !error && (
