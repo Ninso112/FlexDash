@@ -12,7 +12,28 @@
   height: 100%;
   box-sizing: border-box;
   position: relative;
-  z-index: 2;
+  z-index: 1;
+}
+
+.search-drag-handle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  cursor: move;
+  z-index: 0;
+  background: transparent;
+}
+
+.search-drag-handle:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.search-input,
+.search-button {
+  position: relative;
+  z-index: 1;
 }
 
 .search-input {

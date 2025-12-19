@@ -6,11 +6,21 @@ import './ShortcutManager.css'
 
 function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, onPositionUpdate, sizes, onSizeUpdate }) {
   const handleDragStop = useCallback((id, data) => {
+    // Snap to grid if grid mode is enabled
+    let x = data.x
+    let y = data.y
+    
+    if (gridMode) {
+      const gridSize = 32
+      x = Math.round(x / gridSize) * gridSize
+      y = Math.round(y / gridSize) * gridSize
+    }
+    
     onPositionUpdate({
       ...positions,
-      [id]: { x: data.x, y: data.y }
+      [id]: { x, y }
     })
-  }, [positions, onPositionUpdate])
+  }, [positions, onPositionUpdate, gridMode])
 
   const handleResize = useCallback((id, size) => {
     onSizeUpdate({

@@ -61,6 +61,29 @@ function Resizable({ children, onResize, minWidth = 50, minHeight = 50, gridSize
   }, [calculateNewSize, onResize])
 
   const handleEnd = useCallback(() => {
+    if (startPosRef.current && startSizeRef.current) {
+      // Final snap to grid on resize end
+      const currentSize = containerRef.current
+        ? { width: containerRef.current.offsetWidth, height: containerRef.current.offsetHeight }
+        : size
+      
+      let finalWidth = currentSize.width
+      let finalHeight = currentSize.height
+      
+      if (gridSize) {
+        finalWidth = Math.round(finalWidth / gridSize) * gridSize
+        finalHeight = Math.round(finalHeight / gridSize) * gridSize
+        finalWidth = Math.max(minWidth, finalWidth)
+        finalHeight = Math.max(minHeight, finalHeight)
+        
+        const finalSize = { width: finalWidth, height: finalHeight }
+        setSize(finalSize)
+        if (onResize) {
+          onResize(finalSize)
+        }
+      }
+    }
+    
     setIsResizing(false)
     startPosRef.current = null
     startSizeRef.current = null
@@ -68,7 +91,7 @@ function Resizable({ children, onResize, minWidth = 50, minHeight = 50, gridSize
     document.removeEventListener('mouseup', handleEnd)
     document.removeEventListener('touchmove', handleMove)
     document.removeEventListener('touchend', handleEnd)
-  }, [handleMove])
+  }, [handleMove, gridSize, minWidth, minHeight, size, onResize])
 
   const handleStart = useCallback((e, direction) => {
     e.preventDefault()

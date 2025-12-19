@@ -22,6 +22,7 @@ function SearchBar({ searchEngine }) {
 
   return (
     <form className="search-bar" onSubmit={handleSubmit}>
+      <div className="search-drag-handle" />
       <input
         type="text"
         value={query}

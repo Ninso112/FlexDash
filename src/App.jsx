@@ -33,14 +33,24 @@ function App() {
   }, [])
 
   const handleDragStop = useCallback((component, data) => {
+    // Snap to grid if grid mode is enabled
+    let x = data.x
+    let y = data.y
+    
+    if (gridMode) {
+      const gridSize = 32
+      x = Math.round(x / gridSize) * gridSize
+      y = Math.round(y / gridSize) * gridSize
+    }
+    
     setSettings(prev => ({
       ...prev,
       positions: {
         ...prev.positions,
-        [component]: { x: data.x, y: data.y }
+        [component]: { x, y }
       }
     }))
-  }, [])
+  }, [gridMode])
 
   const handleResize = useCallback((component, size) => {
     setSettings(prev => ({
@@ -137,6 +147,7 @@ function App() {
         onStop={(e, data) => handleDragStop('searchBar', data)}
         grid={gridMode ? [32, 32] : null}
         bounds="parent"
+        handle=".search-drag-handle"
       >
         <div className="draggable-container">
           <Resizable
