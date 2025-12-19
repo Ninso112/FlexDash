@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Draggable from 'react-draggable'
 import Resizable from './components/Resizable'
+import GridOverlay from './components/GridOverlay'
 import ShortcutManager from './components/ShortcutManager'
 import WeatherWidget from './components/WeatherWidget'
 import SearchBar from './components/SearchBar'
@@ -176,6 +177,9 @@ function App() {
 
   return (
     <div className="app" ref={appRef} style={backgroundStyle}>
+      {/* Grid Overlay */}
+      <GridOverlay enabled={gridMode} gridSize={32} />
+
       {/* Settings Button */}
       <button 
         className="settings-button"
@@ -210,6 +214,7 @@ function App() {
               minWidth={100}
               minHeight={50}
               initialSize={getSize('personalMessage')}
+              gridMode={gridMode}
             >
               <PersonalMessage message={settings.personalMessage} />
             </Resizable>
@@ -232,6 +237,7 @@ function App() {
             minWidth={200}
             minHeight={40}
             initialSize={getSize('searchBar')}
+            gridMode={gridMode}
           >
             <SearchBar searchEngine={settings.searchEngine} />
           </Resizable>
@@ -253,6 +259,7 @@ function App() {
               minWidth={150}
               minHeight={100}
               initialSize={getSize('weather')}
+              gridMode={gridMode}
             >
               <WeatherWidget location={settings.weatherLocation} />
             </Resizable>

@@ -7,6 +7,18 @@
   position: absolute;
   background: transparent;
   z-index: 10;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.grid-mode-active .resize-handle {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.grid-mode-active .resize-handle:hover {
+  background: rgba(255, 255, 255, 0.5);
 }
 
 .resize-handle-n,

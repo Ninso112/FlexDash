@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import './Resizable.css'
 
-function Resizable({ children, onResize, minWidth = 50, minHeight = 50, gridSize = null, initialSize = null }) {
+function Resizable({ children, onResize, minWidth = 50, minHeight = 50, gridSize = null, initialSize = null, gridMode = false }) {
   const [size, setSize] = useState(initialSize || { width: 'auto', height: 'auto' })
   const [isResizing, setIsResizing] = useState(false)
   const containerRef = useRef(null)
@@ -119,7 +119,7 @@ function Resizable({ children, onResize, minWidth = 50, minHeight = 50, gridSize
   return (
     <div
       ref={containerRef}
-      className="resizable-container"
+      className={`resizable-container ${gridMode ? 'grid-mode-active' : ''}`}
       style={{ width: size.width, height: size.height }}
     >
       {children}
