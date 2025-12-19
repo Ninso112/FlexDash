@@ -1,9 +1,30 @@
 .app {
   width: 100vw;
   height: 100vh;
+  min-width: 320px;
+  min-height: 480px;
   position: relative;
   overflow: hidden;
   transition: background-color 0.3s ease;
+}
+
+/* Responsive scaling */
+@media (max-width: 768px) {
+  .app {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .app {
+    font-size: 15px;
+  }
+}
+
+@media (min-width: 1025px) {
+  .app {
+    font-size: 16px;
+  }
 }
 
 .settings-button,
@@ -41,10 +62,17 @@
 .draggable-container {
   cursor: move;
   user-select: none;
+  position: relative;
+  z-index: 1;
 }
 
 .draggable-container:hover {
   opacity: 0.9;
+}
+
+.draggable-container.dragging {
+  z-index: 100;
+  pointer-events: none;
 }
 
 /* Responsive Design */

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Draggable from 'react-draggable'
+import Resizable from './components/Resizable'
 import ShortcutManager from './components/ShortcutManager'
 import WeatherWidget from './components/WeatherWidget'
 import SearchBar from './components/SearchBar'
@@ -39,8 +40,20 @@ function App() {
     updateSettings({ positions: newPositions })
   }
 
+  const handleResize = (component, size) => {
+    const newSizes = {
+      ...settings.sizes,
+      [component]: size
+    }
+    updateSettings({ sizes: newSizes })
+  }
+
   const getPosition = (component) => {
     return settings.positions[component] || { x: 0, y: 0 }
+  }
+
+  const getSize = (component) => {
+    return settings.sizes?.[component] || null
   }
 
   // Background styling
@@ -85,11 +98,19 @@ function App() {
         <Draggable
           position={getPosition('personalMessage')}
           onStop={(e, data) => handleDragStop('personalMessage', data)}
-          grid={gridMode ? [20, 20] : null}
+          grid={gridMode ? [32, 32] : null}
           bounds="parent"
         >
           <div className="draggable-container">
-            <PersonalMessage message={settings.personalMessage} />
+            <Resizable
+              onResize={(size) => handleResize('personalMessage', size)}
+              gridSize={gridMode ? 32 : null}
+              minWidth={100}
+              minHeight={50}
+              initialSize={getSize('personalMessage')}
+            >
+              <PersonalMessage message={settings.personalMessage} />
+            </Resizable>
           </div>
         </Draggable>
       )}
@@ -98,11 +119,19 @@ function App() {
       <Draggable
         position={getPosition('searchBar')}
         onStop={(e, data) => handleDragStop('searchBar', data)}
-        grid={gridMode ? [20, 20] : null}
+        grid={gridMode ? [32, 32] : null}
         bounds="parent"
       >
         <div className="draggable-container">
-          <SearchBar searchEngine={settings.searchEngine} />
+          <Resizable
+            onResize={(size) => handleResize('searchBar', size)}
+            gridSize={gridMode ? 32 : null}
+            minWidth={200}
+            minHeight={40}
+            initialSize={getSize('searchBar')}
+          >
+            <SearchBar searchEngine={settings.searchEngine} />
+          </Resizable>
         </div>
       </Draggable>
 
@@ -111,11 +140,19 @@ function App() {
         <Draggable
           position={getPosition('weather')}
           onStop={(e, data) => handleDragStop('weather', data)}
-          grid={gridMode ? [20, 20] : null}
+          grid={gridMode ? [32, 32] : null}
           bounds="parent"
         >
           <div className="draggable-container">
-            <WeatherWidget location={settings.weatherLocation} />
+            <Resizable
+              onResize={(size) => handleResize('weather', size)}
+              gridSize={gridMode ? 32 : null}
+              minWidth={150}
+              minHeight={100}
+              initialSize={getSize('weather')}
+            >
+              <WeatherWidget location={settings.weatherLocation} />
+            </Resizable>
           </div>
         </Draggable>
       )}
@@ -127,6 +164,8 @@ function App() {
         gridMode={gridMode}
         positions={settings.shortcutPositions || {}}
         onPositionUpdate={(positions) => updateSettings({ shortcutPositions: positions })}
+        sizes={settings.shortcutSizes || {}}
+        onSizeUpdate={(sizes) => updateSettings({ shortcutSizes: sizes })}
       />
 
       {/* Settings Panel */}
