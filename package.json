@@ -2,7 +2,7 @@
   "name": "flexdash",
   "version": "1.0.0",
   "type": "module",
-  "description": "Eine personalisierbare Startseite / Dashboard-Website",
+  "description": "A customizable homepage / dashboard website",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
