@@ -80,6 +80,7 @@ function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, on
                 minWidth={50}
                 minHeight={50}
                 initialSize={size}
+                gridMode={gridMode}
               >
                 <Shortcut shortcut={shortcut} />
               </Resizable>

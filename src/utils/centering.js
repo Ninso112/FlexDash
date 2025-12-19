@@ -116,6 +116,21 @@ export function autoCenterWidgets(positions, sizes, screenWidth) {
         y: parseInt(rowY)
       }
     }
+    // If multiple widgets in row, distribute them evenly
+    else if (widgetsInRow.length > 1) {
+      const totalWidth = widgetsInRow.reduce((sum, w) => sum + w.width, 0)
+      const spacing = (screenWidth - totalWidth) / (widgetsInRow.length + 1)
+      
+      let currentX = spacing
+      widgetsInRow.forEach((widget, index) => {
+        const x = Math.max(0, currentX)
+        newPositions[widget.id] = {
+          x: Math.round(x / GRID_SIZE) * GRID_SIZE,
+          y: parseInt(rowY)
+        }
+        currentX += widget.width + spacing
+      })
+    }
   })
   
   return newPositions

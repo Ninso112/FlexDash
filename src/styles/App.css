@@ -30,7 +30,7 @@
 .settings-button,
 .grid-toggle-button {
   position: fixed;
-  top: 20px;
+  bottom: 20px;
   right: 20px;
   width: 50px;
   height: 50px;
@@ -56,7 +56,7 @@
 }
 
 .grid-toggle-button {
-  top: 80px;
+  right: 80px;
 }
 
 .draggable-container {
@@ -96,12 +96,12 @@
     width: 45px;
     height: 45px;
     font-size: 20px;
-    top: 10px;
+    bottom: 10px;
     right: 10px;
   }
 
   .grid-toggle-button {
-    top: 65px;
+    right: 65px;
   }
 }
 
