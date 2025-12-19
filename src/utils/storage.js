@@ -16,10 +16,12 @@ export const defaultSettings = {
   weatherEnabled: false,
   weatherLocation: '',
   personalMessage: '',
-  searchEngine: 'google',
+  searchEngine: 'duckduckgo',
   gridMode: false,
   positions: getDefaultPositions(),
-  shortcutPositions: {}
+  shortcutPositions: {},
+  sizes: {},
+  shortcutSizes: {}
 }
 
 // Load settings from localStorage
