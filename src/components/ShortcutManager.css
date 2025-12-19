@@ -1,0 +1,16 @@
+.shortcut-manager {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.draggable-shortcut {
+  position: absolute;
+  cursor: move;
+  user-select: none;
+}
+
+.draggable-shortcut:hover {
+  opacity: 0.9;
+}
+
