@@ -118,13 +118,18 @@ function SettingsPanel({ settings, onUpdate, onClose }) {
                 ))}
               </div>
             ) : (
-              <input
-                type="text"
-                value={localSettings.backgroundImage}
-                onChange={(e) => handleChange('backgroundImage', e.target.value)}
-                placeholder="Enter image URL"
-                className="settings-input"
-              />
+              <>
+                <input
+                  type="text"
+                  value={localSettings.backgroundImage}
+                  onChange={(e) => handleChange('backgroundImage', e.target.value)}
+                  placeholder="Enter image or GIF URL"
+                  className="settings-input"
+                />
+                <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.9rem', marginTop: '5px' }}>
+                  Supports JPG, PNG, GIF, and other image formats
+                </p>
+              </>
             )}
           </section>
 

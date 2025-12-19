@@ -104,6 +104,7 @@ function ShortcutManager({ shortcuts, onUpdateShortcuts, gridMode, positions, on
             onStop={(e, data) => handleDragStop(shortcut.id, data)}
             grid={gridValue}
             bounds="parent"
+            disabled={!gridMode}
           >
             <div className="draggable-shortcut">
               <Resizable

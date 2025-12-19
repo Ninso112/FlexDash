@@ -164,16 +164,17 @@ function App() {
 
   // Background styling (memoized)
   const backgroundStyle = useMemo(() => {
-    return settings.backgroundType === 'image' && settings.backgroundImage
-      ? {
-          backgroundImage: `url(${settings.backgroundImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }
-      : {
-          backgroundColor: settings.backgroundColor || '#1a1a2e'
-        }
+    if (settings.backgroundType === 'image' && settings.backgroundImage) {
+      return {
+        backgroundImage: `url(${settings.backgroundImage})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }
+    }
+    return {
+      backgroundColor: settings.backgroundColor || '#1a1a2e'
+    }
   }, [settings.backgroundType, settings.backgroundImage, settings.backgroundColor])
 
   const toggleGridMode = useCallback(() => {
@@ -285,7 +286,7 @@ function App() {
 
   return (
     <div 
-      className="app" 
+      className={`app ${gridMode ? 'grid-mode-active' : ''}`}
       ref={appRef} 
       style={backgroundStyle}
       onMouseEnter={handleMouseEnter}
@@ -320,6 +321,7 @@ function App() {
           onStop={(e, data) => handleDragStop('personalMessage', data)}
           grid={gridMode ? [settings.gridSize || 32, settings.gridSize || 32] : null}
           bounds="parent"
+          disabled={!gridMode}
         >
           <div className="draggable-container">
             <Resizable
@@ -349,9 +351,10 @@ function App() {
       <Draggable
         position={getPosition('searchBar')}
         onStop={(e, data) => handleDragStop('searchBar', data)}
-        grid={gridMode ? [32, 32] : null}
+        grid={gridMode ? [settings.gridSize || 32, settings.gridSize || 32] : null}
         bounds="parent"
         handle=".search-drag-handle"
+        disabled={!gridMode}
       >
         <div className="draggable-container">
           <Resizable
@@ -384,6 +387,7 @@ function App() {
           onStop={(e, data) => handleDragStop('weather', data)}
           grid={gridMode ? [settings.gridSize || 32, settings.gridSize || 32] : null}
           bounds="parent"
+          disabled={!gridMode}
         >
           <div className="draggable-container">
             <Resizable
