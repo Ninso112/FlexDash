@@ -1,0 +1,65 @@
+.app {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.settings-button,
+.grid-toggle-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.settings-button:hover,
+.grid-toggle-button:hover {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.grid-toggle-button {
+  top: 80px;
+}
+
+.draggable-container {
+  cursor: move;
+  user-select: none;
+}
+
+.draggable-container:hover {
+  opacity: 0.9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .settings-button,
+  .grid-toggle-button {
+    width: 45px;
+    height: 45px;
+    font-size: 20px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .grid-toggle-button {
+    top: 65px;
+  }
+}
+

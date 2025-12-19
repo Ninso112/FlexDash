@@ -1,0 +1,115 @@
+.shortcut {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 15px;
+  gap: 10px;
+}
+
+.shortcut:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.shortcut-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shortcut-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.shortcut-icon-emoji {
+  font-size: 2rem;
+}
+
+.shortcut-name {
+  color: white;
+  font-size: 0.9rem;
+  text-align: center;
+  font-weight: 500;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Größen */
+.shortcut-small {
+  width: 80px;
+  height: 80px;
+}
+
+.shortcut-small .shortcut-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.shortcut-small .shortcut-icon-emoji {
+  font-size: 1.5rem;
+}
+
+.shortcut-small .shortcut-name {
+  font-size: 0.75rem;
+}
+
+.shortcut-medium {
+  width: 120px;
+  height: 120px;
+}
+
+.shortcut-medium .shortcut-icon {
+  width: 60px;
+  height: 60px;
+}
+
+.shortcut-medium .shortcut-icon-emoji {
+  font-size: 2rem;
+}
+
+.shortcut-large {
+  width: 160px;
+  height: 160px;
+}
+
+.shortcut-large .shortcut-icon {
+  width: 80px;
+  height: 80px;
+}
+
+.shortcut-large .shortcut-icon-emoji {
+  font-size: 2.5rem;
+}
+
+.shortcut-large .shortcut-name {
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .shortcut-small {
+    width: 70px;
+    height: 70px;
+  }
+
+  .shortcut-medium {
+    width: 100px;
+    height: 100px;
+  }
+
+  .shortcut-large {
+    width: 130px;
+    height: 130px;
+  }
+}
+
