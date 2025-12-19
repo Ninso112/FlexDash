@@ -6,11 +6,16 @@
 
 .draggable-shortcut {
   position: absolute;
-  cursor: move;
+  cursor: default;
   user-select: none;
 }
 
 .draggable-shortcut:hover {
   opacity: 0.9;
+}
+
+/* Only show move cursor in grid mode */
+.app.grid-mode-active .draggable-shortcut {
+  cursor: move;
 }
 

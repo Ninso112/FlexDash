@@ -70,10 +70,15 @@
 }
 
 .draggable-container {
-  cursor: move;
   user-select: none;
   position: relative;
   z-index: 1;
+  cursor: default;
+}
+
+/* Only show move cursor in grid mode */
+.app.grid-mode-active .draggable-container {
+  cursor: move;
 }
 
 .draggable-container:hover {
