@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo } from 'react'
 import Draggable from 'react-draggable'
 import Resizable from './components/Resizable'
 import ShortcutManager from './components/ShortcutManager'
@@ -6,7 +6,7 @@ import WeatherWidget from './components/WeatherWidget'
 import SearchBar from './components/SearchBar'
 import PersonalMessage from './components/PersonalMessage'
 import SettingsPanel from './components/SettingsPanel'
-import { loadSettings, saveSettings, defaultSettings } from './utils/storage'
+import { loadSettings, saveSettingsDebounced, defaultSettings } from './utils/storage'
 import './styles/App.css'
 
 function App() {
@@ -23,57 +23,77 @@ function App() {
     }
   }, [])
 
-  // Save settings on changes
+  // Save settings on changes (debounced)
   useEffect(() => {
-    saveSettings(settings)
+    saveSettingsDebounced(settings, 300)
   }, [settings])
 
-  const updateSettings = (newSettings) => {
+  const updateSettings = useCallback((newSettings) => {
     setSettings(prev => ({ ...prev, ...newSettings }))
-  }
+  }, [])
 
-  const handleDragStop = (component, data) => {
-    const newPositions = {
-      ...settings.positions,
-      [component]: { x: data.x, y: data.y }
-    }
-    updateSettings({ positions: newPositions })
-  }
+  const handleDragStop = useCallback((component, data) => {
+    setSettings(prev => ({
+      ...prev,
+      positions: {
+        ...prev.positions,
+        [component]: { x: data.x, y: data.y }
+      }
+    }))
+  }, [])
 
-  const handleResize = (component, size) => {
-    const newSizes = {
-      ...settings.sizes,
-      [component]: size
-    }
-    updateSettings({ sizes: newSizes })
-  }
+  const handleResize = useCallback((component, size) => {
+    setSettings(prev => ({
+      ...prev,
+      sizes: {
+        ...prev.sizes,
+        [component]: size
+      }
+    }))
+  }, [])
 
-  const getPosition = (component) => {
+  const getPosition = useCallback((component) => {
     return settings.positions[component] || { x: 0, y: 0 }
-  }
+  }, [settings.positions])
 
-  const getSize = (component) => {
+  const getSize = useCallback((component) => {
     return settings.sizes?.[component] || null
-  }
+  }, [settings.sizes])
 
-  // Background styling
-  const backgroundStyle = settings.backgroundType === 'image' && settings.backgroundImage
-    ? {
-        backgroundImage: `url(${settings.backgroundImage})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }
-    : {
-        backgroundColor: settings.backgroundColor || '#1a1a2e'
-      }
+  // Background styling (memoized)
+  const backgroundStyle = useMemo(() => {
+    return settings.backgroundType === 'image' && settings.backgroundImage
+      ? {
+          backgroundImage: `url(${settings.backgroundImage})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat'
+        }
+      : {
+          backgroundColor: settings.backgroundColor || '#1a1a2e'
+        }
+  }, [settings.backgroundType, settings.backgroundImage, settings.backgroundColor])
+
+  const toggleGridMode = useCallback(() => {
+    const newGridMode = !gridMode
+    setGridMode(newGridMode)
+    updateSettings({ gridMode: newGridMode })
+  }, [gridMode, updateSettings])
+
+  const openSettings = useCallback(() => {
+    setShowSettings(true)
+  }, [])
+
+  const closeSettings = useCallback(() => {
+    setShowSettings(false)
+  }, [])
 
   return (
     <div className="app" style={backgroundStyle}>
       {/* Settings Button */}
       <button 
         className="settings-button"
-        onClick={() => setShowSettings(true)}
+        onClick={openSettings}
         aria-label="Open settings"
       >
         ⚙️
@@ -82,11 +102,7 @@ function App() {
       {/* Grid-Mode Toggle */}
       <button 
         className="grid-toggle-button"
-        onClick={() => {
-          const newGridMode = !gridMode
-          setGridMode(newGridMode)
-          updateSettings({ gridMode: newGridMode })
-        }}
+        onClick={toggleGridMode}
         aria-label="Toggle grid mode"
         title={gridMode ? "Grid Mode: ON" : "Grid Mode: OFF"}
       >
@@ -173,7 +189,7 @@ function App() {
         <SettingsPanel
           settings={settings}
           onUpdate={updateSettings}
-          onClose={() => setShowSettings(false)}
+          onClose={closeSettings}
         />
       )}
     </div>

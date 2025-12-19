@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, memo } from 'react'
 import './SearchBar.css'
 
 const SEARCH_ENGINES = {
@@ -12,13 +12,13 @@ const SEARCH_ENGINES = {
 function SearchBar({ searchEngine }) {
   const [query, setQuery] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = useCallback((e) => {
     e.preventDefault()
     if (query.trim()) {
       const searchUrl = SEARCH_ENGINES[searchEngine] || SEARCH_ENGINES.google
       window.open(searchUrl + encodeURIComponent(query), '_self')
     }
-  }
+  }, [query, searchEngine])
 
   return (
     <form className="search-bar" onSubmit={handleSubmit}>
@@ -36,5 +36,5 @@ function SearchBar({ searchEngine }) {
   )
 }
 
-export default SearchBar
+export default memo(SearchBar)
 

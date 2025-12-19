@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react'
 import './WeatherWidget.css'
 
 // Open-Meteo API (free, no API key required)
@@ -57,7 +57,7 @@ function WeatherWidget({ location }) {
     fetchWeather()
   }, [location])
 
-  const getWeatherIcon = (code) => {
+  const getWeatherIcon = useCallback((code) => {
     // WMO Weather interpretation codes (WW)
     if (code === 0) return '☀️' // Clear sky
     if (code >= 1 && code <= 3) return '🌤️' // Mainly clear, partly cloudy
@@ -68,7 +68,7 @@ function WeatherWidget({ location }) {
     if (code >= 85 && code <= 86) return '🌨️' // Snow showers
     if (code >= 95 && code <= 99) return '⛈️' // Thunderstorm
     return '☁️'
-  }
+  }, [])
 
   if (!location || location.trim() === '') {
     return null
@@ -91,5 +91,5 @@ function WeatherWidget({ location }) {
   )
 }
 
-export default WeatherWidget
+export default memo(WeatherWidget)
 

@@ -45,6 +45,21 @@ export const saveSettings = (settings) => {
     localStorage.setItem('flexdash-settings', JSON.stringify(settings))
   } catch (error) {
     console.error('Error saving settings:', error)
+    // Handle quota exceeded error
+    if (error.name === 'QuotaExceededError') {
+      console.warn('LocalStorage quota exceeded. Some settings may not be saved.')
+    }
   }
+}
+
+// Debounced save function (will be used in App.jsx)
+let saveTimeout = null
+export const saveSettingsDebounced = (settings, delay = 300) => {
+  if (saveTimeout) {
+    clearTimeout(saveTimeout)
+  }
+  saveTimeout = setTimeout(() => {
+    saveSettings(settings)
+  }, delay)
 }
 
