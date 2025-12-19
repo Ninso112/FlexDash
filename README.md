@@ -59,11 +59,14 @@ The project already includes a GitHub Actions workflow file (`.github/workflows/
    git remote add origin https://github.com/YOUR-USERNAME/FlexDash.git
    git push -u origin main
    ```
-3. **Enable GitHub Pages**:
+3. **Enable GitHub Pages** (IMPORTANT - do this first!):
    - Go to your repository on GitHub
    - Click on **Settings** → **Pages**
    - Under **Source** select **GitHub Actions**
-   - The workflow file will automatically run and deploy
+   - Click **Save** (if you see a warning, ignore it for now)
+   - The workflow file will automatically run and deploy on the next push
+   
+   **Note:** If the workflow fails with "Get Pages site failed", make sure you've enabled GitHub Pages in Settings → Pages first, then push again or manually trigger the workflow.
 
 ### Option 2: Manual Deployment
 
