@@ -1,10 +1,18 @@
 // Default settings
 const getDefaultPositions = () => {
   const width = typeof window !== 'undefined' ? window.innerWidth : 1920
+  const gridSize = 32
+  
+  // Center widgets horizontally
+  const centerX = (widgetWidth) => {
+    const x = (width - widgetWidth) / 2
+    return Math.round(x / gridSize) * gridSize
+  }
+  
   return {
-    personalMessage: { x: 50, y: 50 },
-    searchBar: { x: width > 768 ? (width / 2) - 150 : 50, y: 200 },
-    weather: { x: 50, y: 300 }
+    personalMessage: { x: centerX(400), y: 50 },
+    searchBar: { x: centerX(400), y: 150 },
+    weather: { x: centerX(250), y: 250 }
   }
 }
 

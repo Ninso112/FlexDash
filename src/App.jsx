@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import Draggable from 'react-draggable'
 import Resizable from './components/Resizable'
 import ShortcutManager from './components/ShortcutManager'
@@ -7,21 +7,43 @@ import SearchBar from './components/SearchBar'
 import PersonalMessage from './components/PersonalMessage'
 import SettingsPanel from './components/SettingsPanel'
 import { loadSettings, saveSettingsDebounced, defaultSettings } from './utils/storage'
+import { autoCenterWidgets } from './utils/centering'
 import './styles/App.css'
 
 function App() {
   const [settings, setSettings] = useState(defaultSettings)
   const [showSettings, setShowSettings] = useState(false)
   const [gridMode, setGridMode] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1920)
+  const appRef = useRef(null)
 
-  // Load settings on startup
+  // Track window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth)
+    }
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Load settings on startup and auto-center
   useEffect(() => {
     const savedSettings = loadSettings()
     if (savedSettings) {
-      setSettings(savedSettings)
+      // Auto-center widgets on initial load
+      const centeredPositions = autoCenterWidgets(
+        savedSettings.positions || {},
+        savedSettings.sizes || {},
+        windowWidth
+      )
+      
+      setSettings({
+        ...savedSettings,
+        positions: centeredPositions
+      })
       setGridMode(savedSettings.gridMode || false)
     }
-  }, [])
+  }, []) // Only run once on mount
 
   // Save settings on changes (debounced)
   useEffect(() => {
@@ -43,24 +65,47 @@ function App() {
       y = Math.round(y / gridSize) * gridSize
     }
     
-    setSettings(prev => ({
-      ...prev,
-      positions: {
+    setSettings(prev => {
+      const newPositions = {
         ...prev.positions,
         [component]: { x, y }
       }
-    }))
-  }, [gridMode])
+      
+      // Auto-center widgets after drag
+      const centeredPositions = autoCenterWidgets(
+        newPositions,
+        prev.sizes || {},
+        windowWidth
+      )
+      
+      return {
+        ...prev,
+        positions: centeredPositions
+      }
+    })
+  }, [gridMode, windowWidth])
 
   const handleResize = useCallback((component, size) => {
-    setSettings(prev => ({
-      ...prev,
-      sizes: {
+    setSettings(prev => {
+      const newSizes = {
         ...prev.sizes,
         [component]: size
       }
-    }))
-  }, [])
+      
+      // Auto-center widgets after resize
+      const centeredPositions = autoCenterWidgets(
+        prev.positions,
+        newSizes,
+        windowWidth
+      )
+      
+      return {
+        ...prev,
+        sizes: newSizes,
+        positions: centeredPositions
+      }
+    })
+  }, [windowWidth])
 
   const getPosition = useCallback((component) => {
     return settings.positions[component] || { x: 0, y: 0 }
@@ -98,8 +143,39 @@ function App() {
     setShowSettings(false)
   }, [])
 
+  // Auto-center widgets when window resizes (debounced)
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (settings.positions && Object.keys(settings.positions).length > 0) {
+        const centeredPositions = autoCenterWidgets(
+          settings.positions,
+          settings.sizes || {},
+          windowWidth
+        )
+        
+        // Only update if positions actually changed
+        const positionsChanged = Object.keys(centeredPositions).some(
+          key => {
+            const oldPos = settings.positions[key]
+            const newPos = centeredPositions[key]
+            return oldPos && (newPos.x !== oldPos.x || newPos.y !== oldPos.y)
+          }
+        )
+        
+        if (positionsChanged) {
+          setSettings(prev => ({
+            ...prev,
+            positions: centeredPositions
+          }))
+        }
+      }
+    }, 150) // Debounce resize
+    
+    return () => clearTimeout(timeoutId)
+  }, [windowWidth]) // Only run on window resize
+
   return (
-    <div className="app" style={backgroundStyle}>
+    <div className="app" ref={appRef} style={backgroundStyle}>
       {/* Settings Button */}
       <button 
         className="settings-button"
