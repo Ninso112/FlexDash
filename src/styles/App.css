@@ -75,6 +75,20 @@
   pointer-events: none;
 }
 
+/* Allow dragging from the container, but allow clicks on interactive elements */
+.draggable-container > * {
+  pointer-events: auto;
+}
+
+.draggable-container.dragging > * {
+  pointer-events: none;
+}
+
+/* Ensure draggable containers can be dragged */
+.draggable-container {
+  touch-action: none;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .settings-button,
