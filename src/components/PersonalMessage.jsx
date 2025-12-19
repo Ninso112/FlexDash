@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { memo } from 'react'
 import './PersonalMessage.css'
 
 function PersonalMessage({ message }) {
@@ -9,5 +9,5 @@ function PersonalMessage({ message }) {
   )
 }
 
-export default PersonalMessage
+export default memo(PersonalMessage)
 
